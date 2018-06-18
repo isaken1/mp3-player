@@ -4,7 +4,6 @@ import App.Usuario;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -110,6 +109,7 @@ public class FileHandler {
                 return;
             }
 
+            doc.setXmlStandalone(true);
 
             //Cria a tag raiz e as tags que serão inseridas nas raízes
             Element tagUsuario = doc.createElement("Usuario");
@@ -182,18 +182,33 @@ public class FileHandler {
         outputStream.close();
     }
 
+    /**
+     * Função responsável por ler o arquivo XML e retornar um ArrayList<Usuario> contendos todos os usuários cadastrados.
+     * @return Um ArrayList contendo todos os usuários cadastrados.
+     * @throws ParserConfigurationException
+     * @throws SAXException
+     * @throws TransformerException
+     * @throws IOException
+     */
     public ArrayList<Usuario> resgatarUsuarios() throws ParserConfigurationException, SAXException,
             TransformerException, IOException {
         ArrayList<Usuario> usuarios = new ArrayList<>();
 
+        //Inicializa e lê o XML.
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document doc = builder.parse(users);
+        doc.setXmlStandalone(true);
+
+        //Lê o elemento raiz.
         Element raiz = doc.getDocumentElement();
 
+        //Gera um objeto do tipo NodeList com todas as tags que contem Usuario.
         NodeList listaUsuarios = raiz.getElementsByTagName("Usuario");
-        System.out.println(listaUsuarios.item(0).getFirstChild().getTextContent());
+        //System.out.println(listaUsuarios.item(0).getFirstChild().getTextContent());
 
+        //Percorre a listaUsuarios, cria um objeto do tipo Usuario para cada elemento nessa lista e depois os insere
+        //em outra lista que será retornada no fim da função.
         for (int i = 0; i < listaUsuarios.getLength(); i++) {
             Element usuario = (Element) listaUsuarios.item(i).getChildNodes();
 
@@ -207,6 +222,10 @@ public class FileHandler {
         return usuarios;
     }
 
+    /**
+     * Função responsável por criar e configuar o arquivo XML de usuários pela primeira vez para que as funções de
+     * leitura e escrita funcionem adequadamente.
+     */
     private void inicializarUsuarios() {
 
         try {
