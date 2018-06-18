@@ -3,6 +3,9 @@ package IO;
 import App.Usuario;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -17,6 +20,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 
 /**
  *
@@ -38,22 +42,23 @@ public class FileHandler {
     /** Arquivo que guarda as playlists */
     private File playlists;
 
-    private DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-
-    public FileHandler() throws IOException {
+    /**
+     * Construtor padrão da classe FileHandler. Quando criado um objeto desta classe, o mesmo resgata do SO o diretório
+     * home do usuário e cria a pasta base de dados do aplicativo lá, junto dos arquivos de músicas, usuários e
+     * playlists.
+     */
+    public FileHandler() {
         userHome = System.getProperty("user.home");
         baseFolder = new File(userHome + "\\mp3-player");
         if (!baseFolder.exists()) {
-            if (baseFolder.mkdir()) {
-                System.out.println("Diretório criado!");
-            } else {
-                throw new IOException("Não foi possível criar o diretório.");
-            }
+            baseFolder.mkdir();
+            System.out.println("Não foi possível criar o diretório.");
         }
 
         songs = new File(baseFolder.getPath() + "\\musicas.xml");
         users = new File(baseFolder.getPath() + "\\usuarios.xml");
         playlists = new File(baseFolder.getPath() + "\\playlists.xml");
+
         checkBasicFiles();
     }
 
@@ -65,15 +70,13 @@ public class FileHandler {
 
         try {
 
-            DocumentBuilder builder = factory.newDocumentBuilder();
-
             if (!songs.exists()) {
                 songs.createNewFile();
                 System.out.println("Arquivo de músicas criado!");
             }
 
             if (!users.exists()) {
-                users.createNewFile();
+                inicializarUsuarios();
                 Usuario adm = new Usuario("admin", "admin");
                 inserirUsuario(adm);
                 System.out.println("Arquivo de usuários criado!");
@@ -86,22 +89,27 @@ public class FileHandler {
         } catch (IOException ex) {
             ex.printStackTrace();
             System.out.println("Não foi possível criar o arquivo.");
-        } catch (ParserConfigurationException ex) {
-            ex.printStackTrace();
-            System.out.println("");
         }
+
     }
 
     /**
      * Função responsável por inserir um novo usuário no XML de usuários.
      * @param u Usuário a ser inserido.
      */
-    private void inserirUsuario(Usuario u) {
+    public void inserirUsuario(Usuario u) {
         try {
-
             //Instancia um Document para que seja escrito um XML
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.newDocument();
+            Document doc;
+            try {
+                doc = builder.parse(users);
+            } catch (SAXException ex) {
+                ex.printStackTrace();
+                return;
+            }
+
 
             //Cria a tag raiz e as tags que serão inseridas nas raízes
             Element tagUsuario = doc.createElement("Usuario");
@@ -116,10 +124,13 @@ public class FileHandler {
             tagUsuario.appendChild(tagNome);
             tagUsuario.appendChild(tagSenha);
 
-            doc.appendChild(tagUsuario);
+            doc.getDocumentElement().appendChild(tagUsuario);
+
+            doc.getDocumentElement().normalize();
 
             //Converte o documento para string e escreve no arquivo
             String arquivo = converterDocument(doc);
+
             salvarArquivo(arquivo, users);
 
         } catch (ParserConfigurationException ex) {
@@ -152,10 +163,7 @@ public class FileHandler {
         transformer.transform(source, result);
 
         //Pega a string resultante do processamento anterior, que no caso é o próprio XML, e a imprime.
-        String xmlString = result.getWriter().toString();
-        System.out.println(xmlString);
-
-        return xmlString;
+        return result.getWriter().toString();
     }
 
     /**
@@ -166,11 +174,60 @@ public class FileHandler {
      */
     private void salvarArquivo(String documento, File f) throws IOException {
         //Abre a stream no modo de concatenação.
-        FileOutputStream outputStream = new FileOutputStream(f, true);
+        FileOutputStream outputStream = new FileOutputStream(f, false);
         //Escreve na stream.
         outputStream.write(documento.getBytes());
         //Limpa e fecha a stream
         outputStream.flush();
         outputStream.close();
     }
+
+    public ArrayList<Usuario> resgatarUsuarios() throws ParserConfigurationException, SAXException,
+            TransformerException, IOException {
+        ArrayList<Usuario> usuarios = new ArrayList<>();
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(users);
+        Element raiz = doc.getDocumentElement();
+
+        NodeList listaUsuarios = raiz.getElementsByTagName("Usuario");
+        System.out.println(listaUsuarios.item(0).getFirstChild().getTextContent());
+
+        for (int i = 0; i < listaUsuarios.getLength(); i++) {
+            Element usuario = (Element) listaUsuarios.item(i).getChildNodes();
+
+            String nome = usuario.getElementsByTagName("nome").item(0).getTextContent();
+            String senha = usuario.getElementsByTagName("senha").item(0).getTextContent();
+
+            Usuario u = new Usuario(nome, senha);
+            usuarios.add(u);
+        }
+
+        return usuarios;
+    }
+
+    private void inicializarUsuarios() {
+
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.newDocument();
+            doc.setXmlStandalone(true);
+            Element root = doc.createElement("Usuarios");
+            doc.appendChild(root);
+
+            //Converte o documento para string e escreve no arquivo
+            String arquivo = converterDocument(doc);
+
+            salvarArquivo(arquivo, users);
+        } catch (ParserConfigurationException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (TransformerException ex) {
+            ex.printStackTrace();
+        }
+    }
+
 }
