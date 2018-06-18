@@ -74,7 +74,8 @@ public class FileHandler {
 
             if (!users.exists()) {
                 users.createNewFile();
-                Usuario usuario = new Usuario("admin", "admin");
+                Usuario adm = new Usuario("admin", "admin");
+                inserirUsuario(adm);
                 System.out.println("Arquivo de usuários criado!");
             }
 
@@ -115,9 +116,12 @@ public class FileHandler {
             tagUsuario.appendChild(tagNome);
             tagUsuario.appendChild(tagSenha);
 
+            doc.appendChild(tagUsuario);
+
             //Converte o documento para string e escreve no arquivo
             String arquivo = converterDocument(doc);
             salvarArquivo(arquivo, users);
+
         } catch (ParserConfigurationException ex) {
             ex.printStackTrace();
             System.err.println("Falha no processamento do XML.");
