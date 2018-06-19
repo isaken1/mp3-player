@@ -2,11 +2,14 @@ package App;
 
 public class Usuario {
     private String nome, senha;
+    boolean vip;
     int id;
 
-    public Usuario(String nome, String senha) {
+    public Usuario(String nome, String senha, boolean vip, int id) {
         this.nome = nome;
         this.senha = senha;
+        this.vip = vip;
+        this.id = id;
     }
 
     public String getNome() {
@@ -23,5 +26,21 @@ public class Usuario {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public boolean isVip() {
+        return vip;
+    }
+
+    public void setVip(boolean vip) {
+        this.vip = vip;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

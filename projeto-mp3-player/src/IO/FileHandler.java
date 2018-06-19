@@ -1,11 +1,11 @@
 package IO;
 
 import App.Usuario;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  *
@@ -76,8 +77,7 @@ public class FileHandler {
 
             if (!users.exists()) {
                 inicializarUsuarios();
-                Usuario adm = new Usuario("admin", "admin");
-                inserirUsuario(adm);
+                inserirUsuario("admin", "admin", true);
                 System.out.println("Arquivo de usuários criado!");
             }
 
@@ -93,10 +93,12 @@ public class FileHandler {
     }
 
     /**
-     * Função responsável por inserir um novo usuário no XML de usuários.
-     * @param u Usuário a ser inserido.
+     * Função responsável por inserir um novo usuário no XML de usuários e gerar seu ID.
+     * @param nome Nome do usuário.
+     * @param senha Senha do usuário.
+     * @param vip Boolean que define se um usuário é vip ou não.
      */
-    public void inserirUsuario(Usuario u) {
+    public void inserirUsuario(String nome, String senha, boolean vip) {
         try {
             //Instancia um Document para que seja escrito um XML
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -108,21 +110,33 @@ public class FileHandler {
                 ex.printStackTrace();
                 return;
             }
-
             doc.setXmlStandalone(true);
 
+            //Inicializa uma instancia de Random para gerar um id aleatorio;
+            Random idGenerator = new Random();
+            int id;
+
+            //Garante que o id não exista;
+            while (idExiste(id = idGenerator.nextInt(1000000), doc.getDocumentElement()));
+
+            Usuario u = new Usuario(nome, senha, vip, id);
+
             //Cria a tag raiz e as tags que serão inseridas nas raízes
-            Element tagUsuario = doc.createElement("Usuario");
+            Element tagUsuario = doc.createElement("usuario");
+            tagUsuario.setAttribute("id", String.valueOf(id));
             Element tagNome = doc.createElement("nome");
             Element tagSenha = doc.createElement("senha");
+            Element tagVip = doc.createElement("vip");
 
             //Insere o conteúdo da classe usuário nas tags
             tagNome.setTextContent(u.getNome());
             tagSenha.setTextContent(u.getSenha());
+            tagVip.setTextContent((u.isVip()) ? "1" : "0");
 
             //Insere as subtags nome e senha dentro da tag de usuario
             tagUsuario.appendChild(tagNome);
             tagUsuario.appendChild(tagSenha);
+            tagUsuario.appendChild(tagVip);
 
             doc.getDocumentElement().appendChild(tagUsuario);
 
@@ -183,7 +197,7 @@ public class FileHandler {
     }
 
     /**
-     * Função responsável por ler o arquivo XML e retornar um ArrayList<Usuario> contendos todos os usuários cadastrados.
+     * Função responsável por ler o arquivo XML e retornar um ArrayList de usuarios contendos todos os usuários cadastrados.
      * @return Um ArrayList contendo todos os usuários cadastrados.
      * @throws ParserConfigurationException
      * @throws SAXException
@@ -204,7 +218,7 @@ public class FileHandler {
         Element raiz = doc.getDocumentElement();
 
         //Gera um objeto do tipo NodeList com todas as tags que contem Usuario.
-        NodeList listaUsuarios = raiz.getElementsByTagName("Usuario");
+        NodeList listaUsuarios = raiz.getElementsByTagName("usuario");
         //System.out.println(listaUsuarios.item(0).getFirstChild().getTextContent());
 
         //Percorre a listaUsuarios, cria um objeto do tipo Usuario para cada elemento nessa lista e depois os insere
@@ -214,8 +228,11 @@ public class FileHandler {
 
             String nome = usuario.getElementsByTagName("nome").item(0).getTextContent();
             String senha = usuario.getElementsByTagName("senha").item(0).getTextContent();
+            int id = Integer.parseInt(usuario.getAttribute("id"));
+            String sVip = usuario.getElementsByTagName("vip").item(0).getTextContent();
+            boolean vip = sVip.equals("1");
 
-            Usuario u = new Usuario(nome, senha);
+            Usuario u = new Usuario(nome, senha, vip, id);
             usuarios.add(u);
         }
 
@@ -249,8 +266,21 @@ public class FileHandler {
         }
     }
 
-    private boolean idExists(int id) {
-        return true;
+    private boolean idExiste(int id, Element root) {
+
+        //Gera um objeto do tipo NodeList com todas as tags que contem usuario.
+        NodeList listaUsuarios = root.getElementsByTagName("usuario");
+
+        //Percorre a lista e retorna caso ache o ID passado como parâmentro.
+        for (int i = 0; i < listaUsuarios.getLength(); i++) {
+            Element usuario = (Element) listaUsuarios.item(i);
+            if (Integer.parseInt(usuario.getAttribute("id")) ==  id) {
+                return true;
+            }
+        }
+
+        return false;
+
     }
 
 }
