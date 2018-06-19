@@ -14,7 +14,6 @@ public class TestFileHandler{
     @Test
     void testInsercaoUsuario() {
         FileHandler handler = new FileHandler();
-        ArrayList<Usuario> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             Usuario u = new Usuario("T" + i, "abcd");
             handler.inserirUsuario(u);

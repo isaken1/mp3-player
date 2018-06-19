@@ -2,6 +2,7 @@ package App;
 
 public class Usuario {
     private String nome, senha;
+    int id;
 
     public Usuario(String nome, String senha) {
         this.nome = nome;

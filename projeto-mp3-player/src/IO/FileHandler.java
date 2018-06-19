@@ -249,4 +249,8 @@ public class FileHandler {
         }
     }
 
+    private boolean idExists(int id) {
+        return true;
+    }
+
 }
