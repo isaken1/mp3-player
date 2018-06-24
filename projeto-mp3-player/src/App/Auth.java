@@ -4,6 +4,8 @@ import IO.FileHandler;
 
 import UI.LoginForm;
 import org.xml.sax.SAXException;
+
+import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.awt.event.ActionEvent;
@@ -46,9 +48,14 @@ public class Auth implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-       if (procurarUsuario(form.getUsername(), form.getPassword()) != null) {
-
+        logado = procurarUsuario(form.getUsername(), form.getPassword());
+       if (logado == null) {
+           JOptionPane.showMessageDialog(form, "Usuário ou senha incorreto(a).", "Erro",
+                   JOptionPane.ERROR_MESSAGE);
+           return;
        }
+
+       form.dispose();
     }
 
     private Usuario procurarUsuario(String nome, String senha) {
@@ -62,5 +69,10 @@ public class Auth implements ActionListener {
         }
         return null;
     }
+
+    public Usuario getLogado() {
+        return this.logado;
+    }
+
 
 }
