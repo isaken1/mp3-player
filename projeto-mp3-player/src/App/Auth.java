@@ -2,6 +2,7 @@ package App;
 
 import IO.FileHandler;
 
+import Main.Main;
 import UI.LoginForm;
 import org.xml.sax.SAXException;
 
@@ -11,6 +12,7 @@ import javax.xml.transform.TransformerException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 /**
@@ -21,14 +23,18 @@ import java.util.ArrayList;
  */
 public class Auth implements ActionListener {
 
+    /**Gerenciador de arquivos que irá retirar a lista de usuários do XML*/
     private FileHandler handler;
+    /**Lista de usuários.*/
     private ArrayList<Usuario> usuarios;
+    /**Interface gráfica de login.*/
     private LoginForm form;
-    private Usuario logado;
+    /**Variável que irá guardar o usuário que será inserido.*/
+    private Usuario logado = null;
 
+    /**Construtor padrão.*/
     public Auth() {
         handler = new FileHandler();
-        form = new LoginForm(this);
         try {
             usuarios = handler.resgatarUsuarios();
         } catch (ParserConfigurationException parserEx) {
@@ -44,35 +50,38 @@ public class Auth implements ActionListener {
             ioEx.printStackTrace();
             System.out.println("Falha na abertura no arquivo.");
         }
-        form.setVisible(true);
+
+        initUI();
     }
 
     public void actionPerformed(ActionEvent e) {
-        logado = procurarUsuario(form.getUsername(), form.getPassword());
-       if (logado == null) {
-           JOptionPane.showMessageDialog(form, "Usuário ou senha incorreto(a).", "Erro",
-                   JOptionPane.ERROR_MESSAGE);
-           return;
-       }
-
-       form.dispose();
+        procurarUsuario(form.getUsername(), form.getPassword());
+        if (!(logado == null)) {
+            form.dispose();
+        }
     }
 
-    private Usuario procurarUsuario(String nome, String senha) {
+    private void procurarUsuario(String nome, String senha) {
         for (Usuario u : usuarios) {
             if (u.getNome().equals(nome)) {
                 if (u.getSenha().equals(senha)) {
-                    return u;
+                    logado = u;
                 }
-
             }
         }
-        return null;
     }
 
     public Usuario getLogado() {
         return this.logado;
     }
 
+    private void initUI() {
+        form = new LoginForm(this);
+        form.setVisible(true);
+        form.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
 
+    public JFrame getForm(){
+        return form;
+    }
 }

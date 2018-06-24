@@ -7,6 +7,8 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class LoginForm extends JFrame {
     private JTextField txtFieldNome;
@@ -42,7 +44,6 @@ public class LoginForm extends JFrame {
         constraints.gridwidth = 1;
         panel.add(lblSenha, constraints);
 
-
         passFieldSenha = new JPasswordField(30);
         constraints.gridx = 1;
         constraints.gridy = 1;
@@ -67,11 +68,24 @@ public class LoginForm extends JFrame {
         bp.add(btnLogin);
         bp.add(btnCancel);
 
+        txtFieldNome.requestFocus();
+        KeyAdapter k = new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    btnLogin.doClick();
+                }
+            }
+        };
+        txtFieldNome.addKeyListener(k);
+        passFieldSenha.addKeyListener(k);
+
         getContentPane().add(panel, BorderLayout.CENTER);
         getContentPane().add(bp,BorderLayout.PAGE_END);
 
         pack();
         setResizable(false);
+        setLocationRelativeTo(null);
     }
 
     public String getUsername(){

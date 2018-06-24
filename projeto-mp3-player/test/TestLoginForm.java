@@ -10,4 +10,3 @@ public class TestLoginForm {
         LoginForm dialog = new LoginForm(a);
     }
 }
-;
