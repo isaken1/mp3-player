@@ -2,17 +2,14 @@ package App;
 
 import IO.FileHandler;
 
-import Main.Main;
 import UI.LoginForm;
 import org.xml.sax.SAXException;
-
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 /**
@@ -58,7 +55,9 @@ public class Auth implements ActionListener {
         procurarUsuario(form.getUsername(), form.getPassword());
         if (!(logado == null)) {
             form.dispose();
+            return;
         }
+        JOptionPane.showMessageDialog(form,"Usuário ou senha inccorreto(s)", "Erro", JOptionPane.ERROR_MESSAGE);
     }
 
     private void procurarUsuario(String nome, String senha) {
@@ -83,5 +82,9 @@ public class Auth implements ActionListener {
 
     public JFrame getForm(){
         return form;
+    }
+
+    public void finish() {
+        System.exit(0);
     }
 }

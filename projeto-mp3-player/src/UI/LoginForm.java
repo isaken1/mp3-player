@@ -76,6 +76,7 @@ public class LoginForm extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
+                parent.finish();
             }
         });
 
