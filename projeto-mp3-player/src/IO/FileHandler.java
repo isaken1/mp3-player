@@ -97,8 +97,9 @@ public class FileHandler {
      * @param nome Nome do usuário.
      * @param senha Senha do usuário.
      * @param vip Boolean que define se um usuário é vip ou não.
+     * @return Retorna true se o usuário for inserido com sucesso, caso contrário, false.
      */
-    public void inserirUsuario(String nome, String senha, boolean vip) {
+    public boolean inserirUsuario(String nome, String senha, boolean vip) {
         try {
             //Instancia um Document para que seja escrito um XML
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -108,7 +109,7 @@ public class FileHandler {
                 doc = builder.parse(users);
             } catch (SAXException ex) {
                 ex.printStackTrace();
-                return;
+                return false;
             }
             doc.setXmlStandalone(true);
 
@@ -118,6 +119,10 @@ public class FileHandler {
 
             //Garante que o id não exista;
             while (idExiste(id = idGenerator.nextInt(1000000), doc.getDocumentElement()));
+
+            if (nomeExiste(nome, doc.getDocumentElement())) {
+                return false;
+            }
 
             Usuario u = new Usuario(nome, senha, vip, id);
 
@@ -147,6 +152,7 @@ public class FileHandler {
 
             salvarArquivo(arquivo, users);
 
+            return true;
         } catch (ParserConfigurationException ex) {
             ex.printStackTrace();
             System.err.println("Falha no processamento do XML.");
@@ -158,6 +164,7 @@ public class FileHandler {
             System.err.println("Falha na escrita do arquivo.");
         }
 
+        return false;
     }
 
     /**
@@ -280,7 +287,19 @@ public class FileHandler {
         }
 
         return false;
+    }
 
+    private boolean nomeExiste(String nome, Element root) {
+        NodeList listaUsuarios = root.getElementsByTagName("usuario");
+
+        for (int i = 0; i < listaUsuarios.getLength(); i++) {
+            Element usuario = (Element) listaUsuarios.item(i);
+            if (usuario.getAttribute("nome").equals(nome)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

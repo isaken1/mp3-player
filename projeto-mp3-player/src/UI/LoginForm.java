@@ -10,14 +10,29 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+/**
+ * @author Isaac Kennedy
+ * @author Ian Honorato
+ * @version 1.0;
+ * Classe responsável por inicializar a tela de login.
+ */
 public class LoginForm extends JFrame {
+
+    /** Campo de texto para o nome do usuário */
     private JTextField txtFieldNome;
+    /** Campo de texto para a senha do usuário */
     private JPasswordField passFieldSenha;
     private JLabel lblNome;
     private JLabel lblSenha;
+    /** Botão de login */
     private JButton btnLogin;
+    /** Botão de cancelamento */
     private JButton btnCancel;
 
+    /**
+     * Construtuor padrão que inicializa a interface e todos os seus elementos
+     * @param parent Um objeto do tipo Auth para que ele gerencie a conexão com o gerenciador de arquivos.
+     */
     public LoginForm(Auth parent) {
 
         JPanel panel = new JPanel(new GridBagLayout());
