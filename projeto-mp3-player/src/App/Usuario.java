@@ -1,9 +1,14 @@
 package App;
 
+/**
+ * @author Isaac Kennedy
+ * @version 1.0
+ * Classe responsável por abstrair as informações do usuários.
+ */
 public class Usuario {
     private String nome, senha;
-    boolean vip;
-    int id;
+    private boolean vip;
+    private int id;
 
     public Usuario(String nome, String senha, boolean vip, int id) {
         this.nome = nome;

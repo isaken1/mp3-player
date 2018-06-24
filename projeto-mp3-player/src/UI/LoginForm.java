@@ -1,5 +1,7 @@
 package UI;
 
+import App.Auth;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -14,7 +16,7 @@ public class LoginForm extends JFrame {
     private JButton btnLogin;
     private JButton btnCancel;
 
-    public LoginForm(){
+    public LoginForm(Auth parent) {
 
         JPanel panel = new JPanel(new GridBagLayout());
 
@@ -50,12 +52,7 @@ public class LoginForm extends JFrame {
         panel.setBorder(new LineBorder(Color.GRAY));
 
         btnLogin = new JButton("Entrar");
-        btnLogin.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Autenticacao
-            }
-        });
+        btnLogin.addActionListener(parent);
 
         btnCancel = new JButton("Cancelar");
 
@@ -83,9 +80,5 @@ public class LoginForm extends JFrame {
 
     public String getPassword(){
         return (new String(passFieldSenha.getPassword()));
-    }
-
-    public boolean sucesso(){
-        return true;
     }
 }
