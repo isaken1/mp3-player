@@ -2,8 +2,12 @@ package UI;
 
 import App.Usuario;
 
+import IO.FileHandler;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
 public class MainForm extends JFrame {
 
@@ -104,6 +108,7 @@ public class MainForm extends JFrame {
         leftPanel.add(btnAddDirectory, c);
 
         btnAddFile = new JButton("Adicionar música");
+        //btnAddFile.addActionListener(btnAdMusic);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipady = 0;
@@ -313,4 +318,20 @@ public class MainForm extends JFrame {
         this.add(rightPanel, c);
 
     }
+
+    public class btnAdMusic implements ActionListener {
+
+        public void inserir(File musica) {
+            FileHandler f = new FileHandler();
+            f.inserirMusica(musica);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser chooserArquivo = new JFileChooser();
+            int escolha = chooserArquivo.showOpenDialog(getParent());
+            String arquivo = chooserArquivo.getSelectedFile().getAbsolutePath();
+            File caminho = new File(arquivo);
+            inserir(caminho);
+        }
 }
