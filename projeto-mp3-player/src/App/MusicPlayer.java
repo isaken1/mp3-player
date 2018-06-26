@@ -18,16 +18,15 @@ public class MusicPlayer {
     
     /**
      * Construtor padrão
-     * @param musica Arquivo de musica a ser reproduzido.
      */
-    public MusicPlayer(File musica){
-        this.musica = musica;
+    public MusicPlayer(){
     }
     
     /**
      * Esta função é responsável pela reprodução da musica.
+     * @param musica Arquivo de musica a ser reproduzido.
      */
-    public void play(){
+    public void play(File musica){
         try{
             FileInputStream stream = new FileInputStream(musica);
             BufferedInputStream buffer = new BufferedInputStream(stream);
