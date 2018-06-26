@@ -1,5 +1,6 @@
 package IO;
 
+import App.Musica;
 import App.Usuario;
 
 import org.w3c.dom.Document;
@@ -72,6 +73,7 @@ public class FileHandler {
 
             if (!songs.exists()) {
                 songs.createNewFile();
+                inicializarMusicas();
                 System.out.println("Arquivo de músicas criado!");
             }
 
@@ -144,6 +146,66 @@ public class FileHandler {
             tagUsuario.appendChild(tagVip);
 
             doc.getDocumentElement().appendChild(tagUsuario);
+
+            doc.getDocumentElement().normalize();
+
+            //Converte o documento para string e escreve no arquivo
+            String arquivo = converterDocument(doc);
+
+            salvarArquivo(arquivo, users);
+
+            return true;
+        } catch (ParserConfigurationException ex) {
+            ex.printStackTrace();
+            System.err.println("Falha no processamento do XML.");
+        } catch (TransformerException ex) {
+            ex.printStackTrace();
+            System.err.println("Falha na conversão do XML.");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            System.err.println("Falha na escrita do arquivo.");
+        }
+
+        return false;
+    }
+
+    /**
+     * Função responsável por inserir um novo usuário no XML de usuários e gerar seu ID.
+     * @param musica Arquivo da música
+     * @return Retorna true se o usuário for inserido com sucesso, caso contrário, false.
+     */
+    public boolean inserirMusica(File musica) {
+        try {
+            //Instancia um Document para que seja escrito um XML
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc;
+            try {
+                doc = builder.parse(songs);
+            } catch (SAXException ex) {
+                ex.printStackTrace();
+                return false;
+            }
+            doc.setXmlStandalone(true);
+
+            Musica m = new Musica(musica);
+
+
+            //Cria a tag raiz e as tags que serão inseridas nas raízes
+            Element tagMusica = doc.createElement("musica");
+            Element tagNome = doc.createElement("usuario");
+            Element tagCaminho = doc.createElement("caminho");
+            //Insere o conteúdo da classe usuário nas tags
+            tagNome.setTextContent(m.getNome());
+            tagCaminho.setTextContent(m.getCaminho());
+
+            //Insere as subtags nome e senha dentro da tag de usuario
+            tagMusica.appendChild(tagNome);
+            tagMusica.appendChild(tagCaminho);
+
+            tagMusica.normalize();
+
+            doc.getDocumentElement().appendChild(tagMusica);
 
             doc.getDocumentElement().normalize();
 
@@ -264,6 +326,29 @@ public class FileHandler {
             String arquivo = converterDocument(doc);
 
             salvarArquivo(arquivo, users);
+        } catch (ParserConfigurationException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (TransformerException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void inicializarMusicas() {
+
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.newDocument();
+            doc.setXmlStandalone(true);
+            Element root = doc.createElement("Musicas");
+            doc.appendChild(root);
+
+            //Converte o documento para string e escreve no arquivo
+            String arquivo = converterDocument(doc);
+
+            salvarArquivo(arquivo, songs);
         } catch (ParserConfigurationException ex) {
             ex.printStackTrace();
         } catch (IOException ex) {
