@@ -4,6 +4,8 @@ import App.Musica;
 import App.Usuario;
 
 import IO.FileHandler;
+import org.apache.commons.io.FilenameUtils;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
@@ -106,7 +108,7 @@ public class MainForm extends JFrame {
         GridBagConstraints c = new GridBagConstraints();
 
         btnAddDirectory = new JButton("Adicionar diretório");
-        btnAddDirectory.addActionListener(new BtnAdDirec());
+        btnAddDirectory.addActionListener(new BtnAdDirec(this));
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipady = 0;
@@ -354,7 +356,21 @@ public class MainForm extends JFrame {
 
     }
 
-    public void atualizarMusicas(){}
+    public void atualizarMusicas(){
+        FileHandler f = new FileHandler();
+
+        try {
+            for (Musica m : f.resgatarMusicas()) {
+                if(!(modelMusicas.contains(m.getNome()))) {
+                    modelMusicas.addElement(m.getNome());
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("Erro ao resgatar músicas!");
+            System.exit(1);
+        }
+    }
 
     public class BtnAdMusic implements ActionListener {
 
@@ -378,10 +394,17 @@ public class MainForm extends JFrame {
             String arquivo = chooserArquivo.getSelectedFile().getAbsolutePath();
             File caminho = new File(arquivo);
             inserir(caminho);
+            parent.atualizarMusicas();
         }
     }
 
     public class BtnAdDirec implements ActionListener {
+
+        MainForm parent;
+
+        public BtnAdDirec(MainForm parent) {
+            this.parent = parent;
+        }
 
         private void inserir(File musica) {
             FileHandler f = new FileHandler();
@@ -404,8 +427,11 @@ public class MainForm extends JFrame {
             File[] arq = auxiliar.getSelectedFiles();
 
             for (int i = 0; i < arq.length; i++) {
-                inserir(arq[i]);
+                if (FilenameUtils.getExtension(arq[i].getName()).equals("mp3")) {
+                    inserir(arq[i]);
+                }
             }
+            parent.atualizarMusicas();
         }
     }
 }
