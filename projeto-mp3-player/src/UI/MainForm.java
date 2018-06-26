@@ -340,15 +340,7 @@ public class MainForm extends JFrame {
         modelPlaylists = new DefaultListModel();
         modelPlaylist = new DefaultListModel();
 
-        try {
-            for (Musica m : f.resgatarMusicas()) {
-                modelMusicas.addElement(m.getNome());
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            System.out.println("Erro ao resgatar músicas!");
-            System.exit(1);
-        }
+        atualizarMusicas();
 
         listMusicas = new JList(modelMusicas);
         listPlaylist = new JList(modelPlaylist);
