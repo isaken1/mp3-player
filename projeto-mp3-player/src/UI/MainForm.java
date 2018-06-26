@@ -353,9 +353,15 @@ public class MainForm extends JFrame {
 
     }
 
+    public void atualizarMusicas(){}
+
     public class BtnAdMusic implements ActionListener {
 
+        MainForm parent;
 
+        public BtnAdMusic(MainForm parent) {
+            this.parent = parent;
+        }
 
         private void inserir(File musica) {
             FileHandler f = new FileHandler();
