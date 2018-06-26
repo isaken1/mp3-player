@@ -340,7 +340,15 @@ public class MainForm extends JFrame {
         modelPlaylists = new DefaultListModel();
         modelPlaylist = new DefaultListModel();
 
-        atualizarMusicas();
+        try {
+            for (Musica m : f.resgatarMusicas()) {
+                modelMusicas.addElement(m.getNome());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("Erro ao resgatar músicas!");
+            System.exit(1);
+        }
 
         listMusicas = new JList(modelMusicas);
         listPlaylist = new JList(modelPlaylist);
@@ -364,6 +372,10 @@ public class MainForm extends JFrame {
         }
     }
 
+    /**
+     * Esta classe é responsável por todos os eventos que acontecem no botão
+     * de adicionar musica.
+     */
     public class BtnAdMusic implements ActionListener {
 
         MainForm parent;
@@ -371,13 +383,20 @@ public class MainForm extends JFrame {
         public BtnAdMusic(MainForm parent) {
             this.parent = parent;
         }
-
+        
+        /**
+         * Insere o arquivo de música no xml.
+         * @param musica Arquivo de música.
+         */
         private void inserir(File musica) {
             FileHandler f = new FileHandler();
             f.inserirMusica(musica);
         }
 
         @Override
+        /**
+         * Esta função é responsável pela ação do botão.
+         */
         public void actionPerformed(ActionEvent e) {
             JFileChooser chooserArquivo = new JFileChooser();
             FileNameExtensionFilter filter = new FileNameExtensionFilter("Músicas .MP3", "mp3");
@@ -390,6 +409,9 @@ public class MainForm extends JFrame {
         }
     }
 
+    /**
+     * Classe responsável por todas as ações do Botão de Adicionar Diretório.
+     */
     public class BtnAdDirec implements ActionListener {
 
         MainForm parent;
@@ -398,17 +420,22 @@ public class MainForm extends JFrame {
             this.parent = parent;
         }
 
+        /**
+         * Função responsável por adicionar o arquivo de música no xml.
+         * @param musica Arquivo de Música
+         */
         private void inserir(File musica) {
             FileHandler f = new FileHandler();
             f.inserirMusica(musica);
         }
 
+        /**
+         * Função responsável por todos os eventos do botão de adicionar o 
+         * Diretório 
+         */
         public void actionPerformed(ActionEvent e) {
             JFileChooser chooserDiretorio = new JFileChooser();
-            //FileNameExtensionFilter filter = new FileNameExtensionFilter("Músicas .MP3", "mp3");
-            //chooserDiretorio.setFileFilter(filter);
             chooserDiretorio.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            //chooserDiretorio.setMultiSelectionEnabled(true);
             chooserDiretorio.showOpenDialog(getParent());
             File pasta = chooserDiretorio.getSelectedFile();
             File[] musicas = pasta.listFiles();
