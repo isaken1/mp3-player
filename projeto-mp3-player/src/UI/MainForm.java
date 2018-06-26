@@ -16,7 +16,6 @@ public class MainForm extends JFrame {
 
 //    private JMenuBar menuBar;
 //    private JMenu fileMenu;
-
     private JPanel leftMainLayout;
 
     //Painel esquerdo
@@ -67,7 +66,6 @@ public class MainForm extends JFrame {
 //
 //
 //        this.setJMenuBar(menuBar);
-
         initLeftPane();
         initCenterPane();
         initLowerPane();
@@ -85,7 +83,7 @@ public class MainForm extends JFrame {
         this.setVisible(true);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.pack();
-        this.setSize(800,600);
+        this.setSize(800, 600);
         this.setResizable(false);
     }
 
@@ -97,6 +95,7 @@ public class MainForm extends JFrame {
         GridBagConstraints c = new GridBagConstraints();
 
         btnAddDirectory = new JButton("Adicionar diretório");
+        btnAddDirectory.addActionListener(new BtnAdDirec());
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipady = 0;
@@ -337,6 +336,33 @@ public class MainForm extends JFrame {
             File caminho = new File(arquivo);
             inserir(caminho);
         }
+    }
 
+    public class BtnAdDirec implements ActionListener {
+
+        private void inserir(File musica) {
+            FileHandler f = new FileHandler();
+            f.inserirMusica(musica);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser chooserDiretorio = new JFileChooser();
+            //FileNameExtensionFilter filter = new FileNameExtensionFilter("Músicas .MP3", "mp3");
+            //chooserDiretorio.setFileFilter(filter);
+            chooserDiretorio.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            //chooserDiretorio.setMultiSelectionEnabled(true);
+            chooserDiretorio.showOpenDialog(getParent());
+            File pasta = chooserDiretorio.getSelectedFile();
+            File[] musicas = pasta.listFiles();
+            JFileChooser auxiliar = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Músicas .MP3", "mp3");
+            auxiliar.setFileFilter(filter);
+            auxiliar.setSelectedFiles(musicas);
+            File[] arq = auxiliar.getSelectedFiles();
+
+            for (int i = 0; i < arq.length; i++) {
+                inserir(arq[i]);
+            }
+        }
     }
 }
