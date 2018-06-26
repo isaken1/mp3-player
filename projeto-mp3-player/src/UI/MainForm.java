@@ -4,6 +4,7 @@ import App.Usuario;
 
 import IO.FileHandler;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -329,6 +330,8 @@ public class MainForm extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             JFileChooser chooserArquivo = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Músicas .MP3", "mp3");
+            chooserArquivo.setFileFilter(filter);
             int escolha = chooserArquivo.showOpenDialog(getParent());
             String arquivo = chooserArquivo.getSelectedFile().getAbsolutePath();
             File caminho = new File(arquivo);
