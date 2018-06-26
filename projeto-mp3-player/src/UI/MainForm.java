@@ -108,7 +108,7 @@ public class MainForm extends JFrame {
         leftPanel.add(btnAddDirectory, c);
 
         btnAddFile = new JButton("Adicionar música");
-        //btnAddFile.addActionListener(btnAdMusic);
+        btnAddFile.addActionListener(new BtnAdMusic());
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipady = 0;
@@ -319,9 +319,9 @@ public class MainForm extends JFrame {
 
     }
 
-    public class btnAdMusic implements ActionListener {
+    public class BtnAdMusic implements ActionListener {
 
-        public void inserir(File musica) {
+        private void inserir(File musica) {
             FileHandler f = new FileHandler();
             f.inserirMusica(musica);
         }
@@ -334,4 +334,6 @@ public class MainForm extends JFrame {
             File caminho = new File(arquivo);
             inserir(caminho);
         }
+
+    }
 }
