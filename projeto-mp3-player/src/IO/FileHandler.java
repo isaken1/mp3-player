@@ -212,7 +212,7 @@ public class FileHandler {
             //Converte o documento para string e escreve no arquivo
             String arquivo = converterDocument(doc);
 
-            salvarArquivo(arquivo, users);
+            salvarArquivo(arquivo, songs);
 
             return true;
         } catch (ParserConfigurationException ex) {
@@ -306,6 +306,36 @@ public class FileHandler {
         }
 
         return usuarios;
+    }
+
+    public ArrayList<Musica> resgatarMusicas() throws ParserConfigurationException, SAXException, IOException {
+        ArrayList<Musica> musicas = new ArrayList<>();
+
+        //Inicializa e lê o XML.
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(songs);
+        doc.setXmlStandalone(true);
+
+        //Lê o elemento raiz.
+        Element raiz = doc.getDocumentElement();
+
+        //Gera um objeto do tipo NodeList com todas as tags que contem Usuario.
+        NodeList listaMusicas = raiz.getElementsByTagName("musica");
+        //System.out.println(listaUsuarios.item(0).getFirstChild().getTextContent());
+
+        //Percorre a listaUsuarios, cria um objeto do tipo Usuario para cada elemento nessa lista e depois os insere
+        //em outra lista que será retornada no fim da função.
+        for (int i = 0; i < listaMusicas.getLength(); i++) {
+            Element musica = (Element) listaMusicas.item(i).getChildNodes();
+
+            File m = new File(musica.getElementsByTagName("caminho").item(0).getTextContent());
+            Musica s = new Musica(m);
+
+            musicas.add(s);
+        }
+
+        return musicas;
     }
 
     /**

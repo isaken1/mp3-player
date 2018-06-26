@@ -1,5 +1,6 @@
 package UI;
 
+import App.Musica;
 import App.Usuario;
 
 import IO.FileHandler;
@@ -28,6 +29,10 @@ public class MainForm extends JFrame {
     private JPanel centerPanel;
     private JLabel lblMusicas;
     private JLabel lblPlaylist;
+    private DefaultListModel modelMusicas;
+    private DefaultListModel modelPlaylist;
+    private JList listMusicas;
+    private JList listPlaylist;
     private JScrollPane scrollPaneMusicas;
     private JScrollPane scrollPanePlaylist;
 
@@ -43,6 +48,8 @@ public class MainForm extends JFrame {
     private JLabel lblUsuario;
     private JLabel lblVip;
     private JLabel lblPlaylists;
+    private DefaultListModel modelPlaylists;
+    private JList listPlaylists;
     private JScrollPane scrollPanePlaylists;
     private JButton btnNovaPlaylist;
 
@@ -67,6 +74,8 @@ public class MainForm extends JFrame {
 //
 //
 //        this.setJMenuBar(menuBar);
+
+        initLists();
 
         initLeftPane();
         initCenterPane();
@@ -143,8 +152,8 @@ public class MainForm extends JFrame {
 
         lblMusicas = new JLabel("Músicas");
         lblPlaylist = new JLabel("Playlist");
-        scrollPaneMusicas = new JScrollPane();
-        scrollPanePlaylists = new JScrollPane();
+        scrollPaneMusicas = new JScrollPane(listMusicas);
+        scrollPanePlaylist = new JScrollPane(listPlaylist);
 
         lblMusicas.setVerticalAlignment(JLabel.CENTER);
         lblPlaylist.setVerticalAlignment(JLabel.CENTER);
@@ -189,7 +198,7 @@ public class MainForm extends JFrame {
         c.gridx = 1;
         c.gridy = 1;
 
-        centerPanel.add(scrollPanePlaylists, c);
+        centerPanel.add(scrollPanePlaylist, c);
 
         c.fill = GridBagConstraints.BOTH;
         c.insets = new Insets(0, 0, 0, 0);
@@ -262,7 +271,7 @@ public class MainForm extends JFrame {
         lblUsuario = new JLabel("Usuário: " + logado.getNome());
         lblVip = new JLabel("Tipo de conta: " + ((logado.isVip()) ? "VIP" : "Comum"));
         lblPlaylists = new JLabel("Playlists");
-        scrollPanePlaylists = new JScrollPane();
+        scrollPanePlaylists = new JScrollPane(listPlaylists);
         btnNovaPlaylist = new JButton("Nova playlist");
 
         c.gridwidth = GridBagConstraints.REMAINDER;
@@ -320,7 +329,33 @@ public class MainForm extends JFrame {
 
     }
 
+    private void initLists() {
+
+        FileHandler f = new FileHandler();
+
+        modelMusicas = new DefaultListModel();
+        modelPlaylists = new DefaultListModel();
+        modelPlaylist = new DefaultListModel();
+
+        try {
+            for (Musica m : f.resgatarMusicas()) {
+                modelMusicas.addElement(m.getNome());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("Erro ao resgatar músicas!");
+            System.exit(1);
+        }
+
+        listMusicas = new JList(modelMusicas);
+        listPlaylist = new JList(modelPlaylist);
+        listPlaylists = new JList(modelPlaylists);
+
+    }
+
     public class BtnAdMusic implements ActionListener {
+
+
 
         private void inserir(File musica) {
             FileHandler f = new FileHandler();
