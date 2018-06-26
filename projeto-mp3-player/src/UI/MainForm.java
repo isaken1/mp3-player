@@ -1,5 +1,6 @@
 package UI;
 
+import App.MusicPlayer;
 import App.Musica;
 import App.Usuario;
 
@@ -7,15 +8,19 @@ import IO.FileHandler;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 
-public class MainForm extends JFrame {
+public class MainForm extends JFrame implements ListSelectionListener {
 
     Usuario logado;
+    MusicPlayer player;
 
 //    private JMenuBar menuBar;
 //    private JMenu fileMenu;
@@ -63,6 +68,8 @@ public class MainForm extends JFrame {
     private void initUI() {
         this.setTitle("MP3 Player");
         this.setLayout(new GridBagLayout());
+
+        player = new MusicPlayer();
 
         leftMainLayout = new JPanel(new GridBagLayout());
 
@@ -222,6 +229,9 @@ public class MainForm extends JFrame {
         btnProximo = new JButton(">>");
         progressBarMusica = new JProgressBar();
 
+        btnPlay.setEnabled(false);
+        btnPlay.addActionListener(new BtnPlayListener(this));
+
         GridBagConstraints c = new GridBagConstraints();
 
         c.gridy = 0;
@@ -343,9 +353,38 @@ public class MainForm extends JFrame {
         atualizarMusicas();
 
         listMusicas = new JList(modelMusicas);
+        listMusicas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listMusicas.addListSelectionListener(this);
         listPlaylist = new JList(modelPlaylist);
         listPlaylists = new JList(modelPlaylists);
 
+    }
+
+    public void play(Musica m) {
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                player.play(new File(m.getCaminho()));
+            }
+        };
+        if (!player.isPlaying()) {
+            t.start();
+        } else {
+            if (!t.isInterrupted()) {
+                player.stop();
+                t.interrupt();
+            }
+        }
+    }
+
+    public void valueChanged(ListSelectionEvent e) {
+        if (e.getValueIsAdjusting() == false) {
+            if (listMusicas.getSelectedIndex() == -1) {
+                btnPlay.setEnabled(false);
+            } else {
+                btnPlay.setEnabled(true);
+            }
+        }
     }
 
     public void atualizarMusicas(){
@@ -425,5 +464,35 @@ public class MainForm extends JFrame {
             }
             parent.atualizarMusicas();
         }
+    }
+
+    private class BtnPlayListener implements ActionListener {
+
+        MainForm parent;
+
+        public BtnPlayListener(MainForm parent) {
+            this.parent = parent;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            FileHandler f = new FileHandler();
+            Musica selected = null;
+            try {
+                for (Musica m : f.resgatarMusicas()) {
+                    if (m.getNome().equals(listMusicas.getSelectedValue())) {
+                        selected = m;
+                        break;
+                    }
+                }
+                if (selected != null) {
+                    parent.play(selected);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.out.println("Erro ao resgatar músicas!");
+                System.exit(1);
+            }
+        }
+
     }
 }
