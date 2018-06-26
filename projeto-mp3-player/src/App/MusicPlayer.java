@@ -10,15 +10,23 @@ import javazoom.jl.player.Player;
 /**
  *
  * @author ian
+ * Classe responsável por reproduzir as musicas
  */
 public class MusicPlayer {
     private File musica;
     private Player player;
     
+    /**
+     * Construtor padrão
+     * @param musica Arquivo de musica a ser reproduzido.
+     */
     public MusicPlayer(File musica){
         this.musica = musica;
     }
     
+    /**
+     * Esta função é responsável pela reprodução da musica.
+     */
     public void play(){
         try{
             FileInputStream stream = new FileInputStream(musica);
