@@ -8,17 +8,17 @@ public class MainForm extends JFrame {
 
     private JMenuBar menuBar;
     private JMenu fileMenu;
-    private JPanel centerPanel;
+    GridBagLayout leftMainLayout;
 
-    private JLabel songsLabel;
-    private JList songList;
-    private DefaultListModel songListModel;
-    private JScrollPane scrollPaneSongs;
+    JPanel leftPanel;
+    JButton btnAddDirectory;
+    JButton btnAddFile;
 
-    private JLabel plLabel;
-    private JList plList;
-    private DefaultListModel plListModel;
-    private JScrollPane scrollPanePl;
+    JPanel centerPanel;
+    JLabel lblMusicas;
+    JLabel lblPlaylist;
+    JScrollPane scrollPaneMusicas;
+    JScrollPane scrollPanePlaylists;
 
     public MainForm() {
         initUI();
@@ -28,6 +28,16 @@ public class MainForm extends JFrame {
         this.setTitle("MP3 Player");
         this.setLayout(new BorderLayout());
 
+        leftMainLayout = new GridBagLayout();
+
+        GridBagConstraints c = new GridBagConstraints();
+
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 0.8;
+        c.weighty = 1;
+        c.fill = GridBagConstraints.BOTH;
+
         menuBar = new JMenuBar();
         fileMenu = new JMenu();
         fileMenu.setName("Aplicação");
@@ -35,58 +45,98 @@ public class MainForm extends JFrame {
 
         this.setJMenuBar(menuBar);
 
-        songListModel = new DefaultListModel();
-        songsLabel = new JLabel("Músicas");
-        songList = new JList(songListModel);
-        //songList.addListSelectionListener(this);
-        songList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        songList.setVisibleRowCount(10);
-        scrollPaneSongs = new JScrollPane(songList);
+        initLeftPane();
+        initCenterPane();
 
-        plListModel = new DefaultListModel();
-        plLabel = new JLabel("Playlist");
-        plList = new JList(plListModel);
-        //plList.addListSelectionListener(this);
-        plList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        plList.setVisibleRowCount(10);
-        scrollPanePl = new JScrollPane(plList);
+        this.setVisible(true);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.pack();
+        this.setResizable(false);
 
+    }
 
-        centerPanel = new JPanel();
-        centerPanel.setLayout(new GridLayout());
+    private void initLeftPane() {
+
+        leftPanel = new JPanel();
+        leftPanel.setLayout(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
 
-        c.fill = GridBagConstraints.VERTICAL;
+        btnAddDirectory = new JButton("Adicionar diretório");
 
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.ipady = 0;
+        c.weighty = 0.2;
+        c.anchor = GridBagConstraints.FIRST_LINE_START;
+        c.insets = new Insets(20, 20, 0, 0);
         c.gridx = 0;
         c.gridy = 0;
-        c.gridwidth = 2;
-        centerPanel.add(songsLabel, c);
 
+        leftPanel.add(btnAddDirectory, c);
+
+        btnAddFile = new JButton("Adicionar música");
+
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.ipady = 0;
+        c.weighty = 0.2;
+        c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(20, 20, 100, 0);
         c.gridx = 0;
         c.gridy = 1;
-        c.gridwidth = 2;
-        centerPanel.add(plLabel, c);
 
+        leftPanel.add(btnAddFile, c);
+
+        this.add(leftPanel);
+
+    }
+
+    private void initCenterPane() {
+        centerPanel = new JPanel(new GridBagLayout());
+
+        GridBagConstraints c = new GridBagConstraints();
+
+        lblMusicas = new JLabel("Músicas");
+        lblPlaylist = new JLabel("Playlist");
+
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(20, 20, 30, 20);
+        c.weighty = 0.2;
+        c.weightx = 0.5;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.anchor = GridBagConstraints.PAGE_START;
+
+        centerPanel.add(lblMusicas, c);
+
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(20, 20, 30, 20);
+        c.weighty = 0.2;
+        c.weightx = 0.5;
         c.gridx = 1;
         c.gridy = 0;
-        c.gridheight = 5;
-        centerPanel.add(scrollPaneSongs, c);
+        c.anchor = GridBagConstraints.PAGE_START;
 
+        centerPanel.add(lblPlaylist, c);
+
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(20, 20, 30, 20);
+        c.weighty = 0.8;
+        c.weightx = 0.5;
+        c.gridx = 0;
+        c.gridy = 1;
+
+        centerPanel.add(scrollPaneMusicas, c);
+
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(20, 20, 30, 20);
+        c.weighty = 0.8;
+        c.weightx = 0.5;
         c.gridx = 1;
         c.gridy = 1;
-        c.gridheight = 5;
-        centerPanel.add(scrollPanePl, c);
 
-        this.add(centerPanel, BorderLayout.CENTER);
+        centerPanel.add(scrollPanePlaylists, c);
 
-        this.setVisible(true);
-        this.pack();
-        this.setResizable(false);
-        this.setLocationRelativeTo(null);
-
-        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.add(centerPanel);
     }
 
     public void valueChanged(ListSelectionEvent e) {

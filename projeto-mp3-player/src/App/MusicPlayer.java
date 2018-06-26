@@ -13,7 +13,6 @@ import javazoom.jl.player.Player;
  * Classe responsável por reproduzir as musicas
  */
 public class MusicPlayer {
-    private File musica;
     private Player player;
     
     /**
@@ -27,7 +26,7 @@ public class MusicPlayer {
      * @param musica Arquivo de musica a ser reproduzido.
      */
     public void play(File musica){
-        try{
+        try {
             FileInputStream stream = new FileInputStream(musica);
             BufferedInputStream buffer = new BufferedInputStream(stream);
             this.player = new Player(buffer);
