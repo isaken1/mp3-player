@@ -22,7 +22,7 @@ public class Main {
             Usuario l = a.getLogado();
             System.out.println(l.getNome());
 
-            MainForm main = new MainForm();
+            MainForm main = new MainForm(l);
         } else {
             System.out.println("Falha no login.");
         }

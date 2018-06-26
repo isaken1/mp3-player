@@ -1,31 +1,48 @@
 package UI;
 
+import App.Usuario;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class MainForm extends JFrame {
 
-    private JMenuBar menuBar;
-    private JMenu fileMenu;
+    Usuario logado;
+
+//    private JMenuBar menuBar;
+//    private JMenu fileMenu;
+
     private JPanel leftMainLayout;
 
+    //Painel esquerdo
     private JPanel leftPanel;
     private JButton btnAddDirectory;
     private JButton btnAddFile;
 
+    //Painel central
     private JPanel centerPanel;
     private JLabel lblMusicas;
     private JLabel lblPlaylist;
     private JScrollPane scrollPaneMusicas;
-    private JScrollPane scrollPanePlaylists;
+    private JScrollPane scrollPanePlaylist;
 
+    //Painel inferior
     private JPanel lowerPanel;
     private JButton btnAnterior;
     private JButton btnPlay;
     private JButton btnProximo;
     private JProgressBar progressBarMusica;
 
-    public MainForm() {
+    //Painel direito
+    private JPanel rightPanel;
+    private JLabel lblUsuario;
+    private JLabel lblVip;
+    private JLabel lblPlaylists;
+    private JScrollPane scrollPanePlaylists;
+    private JButton btnNovaPlaylist;
+
+    public MainForm(Usuario u) {
+        logado = u;
         initUI();
     }
 
@@ -37,31 +54,34 @@ public class MainForm extends JFrame {
 
         GridBagConstraints c = new GridBagConstraints();
 
+//        menuBar = new JMenuBar();
+//        fileMenu = new JMenu("Aplicação");
+//        JMenuItem menuItem = new JMenuItem("Item");
+//        fileMenu.add(menuItem);
+//        menuBar.add(fileMenu);
+//
+//
+//        this.setJMenuBar(menuBar);
+
+        initLeftPane();
+        initCenterPane();
+        initLowerPane();
+
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 0.8;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
 
-        menuBar = new JMenuBar();
-        fileMenu = new JMenu();
-        fileMenu.setName("Aplicação");
-        menuBar.add(fileMenu);
-
-        this.setJMenuBar(menuBar);
-
-        initLeftPane();
-        initCenterPane();
-        initLowerPane();
-
         this.add(leftMainLayout, c);
+
+        initRightPane();
 
         this.setVisible(true);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.pack();
         this.setSize(800,600);
         this.setResizable(false);
-
     }
 
     private void initLeftPane() {
@@ -149,7 +169,7 @@ public class MainForm extends JFrame {
 
         c.fill = GridBagConstraints.BOTH;
         c.insets = new Insets(5, 20, 30, 20);
-        c.weighty = 0.0;
+        c.weighty = 0.9;
         c.weightx = 0.5;
         c.gridx = 0;
         c.gridy = 1;
@@ -226,5 +246,71 @@ public class MainForm extends JFrame {
         c.anchor = GridBagConstraints.LAST_LINE_START;
 
         this.leftMainLayout.add(lowerPanel, c);
+    }
+
+    private void initRightPane() {
+        rightPanel = new JPanel(new GridBagLayout());
+
+        GridBagConstraints c = new GridBagConstraints();
+
+        lblUsuario = new JLabel("Usuário: " + logado.getNome());
+        lblVip = new JLabel("Tipo de conta: " + ((logado.isVip()) ? "VIP" : "Comum"));
+        lblPlaylists = new JLabel("Playlists");
+        scrollPanePlaylists = new JScrollPane();
+        btnNovaPlaylist = new JButton("Nova playlist");
+
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.PAGE_START;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.insets = new Insets(20, 10, 30, 10);
+
+        rightPanel.add(lblUsuario, c);
+
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 1;
+        c.insets = new Insets(10, 10, 30, 10);
+        c.anchor = GridBagConstraints.PAGE_START;
+
+        rightPanel.add(lblVip, c);
+
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.CENTER;
+        c.insets = new Insets(10, 10, 5, 10);
+        c.gridx = 0;
+        c.gridy = 2;
+
+        rightPanel.add(lblPlaylists, c);
+
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = 0;
+        c.gridy = 3;
+        c.weighty = 0.3;
+        c.anchor = GridBagConstraints.CENTER;
+
+        rightPanel.add(scrollPanePlaylists, c);
+
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.PAGE_END;
+        c.insets = new Insets(0, 0, 0, 0);
+        c.gridx = 0;
+        c.gridy = 4;
+
+        rightPanel.add(btnNovaPlaylist, c);
+
+        c.gridx = 1;
+        c.gridy = 0;
+        c.weightx = 0.2;
+        c.weighty = 1;
+        c.fill = GridBagConstraints.BOTH;
+
+        this.add(rightPanel, c);
+
     }
 }

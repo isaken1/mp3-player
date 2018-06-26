@@ -52,6 +52,7 @@ public class Auth implements ActionListener {
         initUI();
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         procurarUsuario(form.getUsername(), form.getPassword());
         if (!(logado == null)) {
