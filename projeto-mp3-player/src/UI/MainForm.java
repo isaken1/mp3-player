@@ -1,8 +1,12 @@
 package UI;
 
+import IO.FileHandler;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
 public class MainForm extends JFrame {
 
@@ -60,7 +64,7 @@ public class MainForm extends JFrame {
         this.setVisible(true);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.pack();
-        this.setSize(800,600);
+        this.setSize(800, 600);
         this.validate();
         //this.setResizable(false);
 
@@ -74,7 +78,7 @@ public class MainForm extends JFrame {
         GridBagConstraints c = new GridBagConstraints();
 
         btnAddDirectory = new JButton("Adicionar diretório");
-
+        
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipady = 0;
         c.weighty = 0.2;
@@ -86,7 +90,8 @@ public class MainForm extends JFrame {
         leftPanel.add(btnAddDirectory, c);
 
         btnAddFile = new JButton("Adicionar música");
-
+        btnAddFile.addActionListener(btnAdMusic musica);
+        
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipady = 0;
         c.weighty = 0.2;
@@ -233,5 +238,20 @@ public class MainForm extends JFrame {
         //TODO
     }
 
+    public class btnAdMusic implements ActionListener {
 
+        public void inserir(File musica) {
+            FileHandler f = new FileHandler();
+            f.inserirMusica(musica);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser chooserArquivo = new JFileChooser();
+            int escolha = chooserArquivo.showOpenDialog(getParent());
+            String arquivo = chooserArquivo.getSelectedFile().getAbsolutePath();
+            File caminho = new File(arquivo);
+            inserir(caminho);
+        }
+    }
 }
