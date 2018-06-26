@@ -1,7 +1,6 @@
 package UI;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
 
 public class MainForm extends JFrame {
@@ -61,8 +60,7 @@ public class MainForm extends JFrame {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.pack();
         this.setSize(800,600);
-        this.validate();
-        //this.setResizable(false);
+        this.setResizable(false);
 
     }
 
@@ -79,7 +77,7 @@ public class MainForm extends JFrame {
         c.ipady = 0;
         c.weighty = 0.2;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
-        c.insets = new Insets(20, 5, 0, 0);
+        c.insets = new Insets(20, 0, 0, 0);
         c.gridx = 0;
         c.gridy = 0;
 
@@ -90,8 +88,8 @@ public class MainForm extends JFrame {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipady = 0;
         c.weighty = 0.2;
-        c.anchor = GridBagConstraints.LINE_START;
-        c.insets = new Insets(20, 20, 100, 0);
+        c.anchor = GridBagConstraints.FIRST_LINE_START;
+        c.insets = new Insets(20, 0, 100, 0);
         c.gridx = 0;
         c.gridy = 1;
         c.gridheight = GridBagConstraints.REMAINDER;
@@ -100,11 +98,13 @@ public class MainForm extends JFrame {
 
         c.fill = GridBagConstraints.BOTH;
         c.weighty = 0.9;
-        c.weightx = 0.9;
-        c.anchor = GridBagConstraints.FIRST_LINE_START;
+        c.weightx = 0.8;
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 0;
         c.gridy = 0;
+        c.gridwidth = 1;
+        c.gridheight = GridBagConstraints.RELATIVE;
+        c.anchor = GridBagConstraints.FIRST_LINE_START;
 
         this.leftMainLayout.add(leftPanel, c);
 
@@ -169,9 +169,9 @@ public class MainForm extends JFrame {
         c.insets = new Insets(0, 0, 0, 0);
         c.weighty = 0.9;
         c.weightx = 0.8;
-        c.anchor = GridBagConstraints.PAGE_START;
         c.gridx = 1;
         c.gridy = 0;
+        c.anchor = GridBagConstraints.FIRST_LINE_END;
 
         this.leftMainLayout.add(centerPanel, c);
     }
@@ -213,7 +213,6 @@ public class MainForm extends JFrame {
         c.gridy = 0;
         c.gridx = 3;
         c.gridwidth = GridBagConstraints.REMAINDER;
-        c.anchor = GridBagConstraints.PAGE_START;
         c.fill = GridBagConstraints.BOTH;
         c.weightx = 0.76;
 
@@ -223,15 +222,9 @@ public class MainForm extends JFrame {
         c.gridx = 0;
         c.gridy = 1;
         c.weighty = 0.2;
-        c.weightx = 0.9;
+        c.weightx = 0.8;
         c.anchor = GridBagConstraints.LAST_LINE_START;
 
         this.leftMainLayout.add(lowerPanel, c);
     }
-
-    public void valueChanged(ListSelectionEvent e) {
-        //TODO
-    }
-
-
 }
